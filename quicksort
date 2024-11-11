@@ -1,0 +1,54 @@
+#include <iostream>
+using namespace std;
+
+// Function to display the array
+void displayArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+// Partition function to rearrange elements around the pivot
+int partition(int arr[], int low, int high, int pass) {
+    int pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j <= high - 1; j++) {
+        if (arr[j] <= pivot) {
+            i++;
+            swap(arr[i], arr[j]);
+        }
+    }
+    swap(arr[i + 1], arr[high]);
+
+    // Display the array after each partition
+    cout << "After Pass " << pass << ": ";
+    displayArray(arr, high + 1);  // Displaying only the part up to high index for clarity
+    return (i + 1);
+}
+
+// Recursive Quick Sort function
+void quickSort(int arr[], int low, int high, int &pass) {
+    if (low < high) {
+        int pi = partition(arr, low, high, pass++);
+        quickSort(arr, low, pi - 1, pass);
+        quickSort(arr, pi + 1, high, pass);
+    }
+}
+
+int main() {
+    int arr[] = {10, 7, 8, 9, 1, 5};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int pass = 1;
+
+    cout << "Initial array: ";
+    displayArray(arr, n);
+
+    quickSort(arr, 0, n - 1, pass);
+
+    cout << "Sorted array: ";
+    displayArray(arr, n);
+
+    return 0;
+}

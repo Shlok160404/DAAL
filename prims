@@ -1,0 +1,85 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+const int MAX = 100;
+const int INF = 1e9; // Large value representing infinity
+
+class Prims {
+public:
+    void createGraph(int cost[MAX][MAX], int &n) {
+        cout << "Enter the number of vertices: ";
+        cin >> n;
+
+        cout << "Enter the adjacency cost matrix:" << endl;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cin >> cost[i][j];
+                if (cost[i][j] == 0 && i != j) {  // If there's no edge between nodes, set to INF
+                    cost[i][j] = INF;
+                }
+            }
+        }
+    }
+
+    int findMinCostVertex(int n, int minCost[MAX], bool inTree[MAX]) {
+        int minCostVertex = -1;
+        for (int v = 0; v < n; v++) {
+            if (!inTree[v] && (minCostVertex == -1 || minCost[v] < minCost[minCostVertex])) {
+                minCostVertex = v;
+            }
+        }
+        return minCostVertex;
+    }
+
+    void findMinimumSpanningTree(int n, int cost[MAX][MAX]) {
+        int minCost[MAX];
+        bool inTree[MAX];
+        int sum = 0;
+
+        // Initialize all vertices as not being in the MST and set initial costs to infinity
+        for (int i = 0; i < n; i++) {
+            minCost[i] = INF;
+            inTree[i] = false;
+        }
+
+        minCost[0] = 0; // Start from the first vertex
+        int edgesAdded = 0;
+
+        cout << "Minimum Spanning Tree Edges:" << endl;
+
+        while (edgesAdded < n - 1) {
+            int u = findMinCostVertex(n, minCost, inTree);
+
+            if (u == -1) { // If no vertex was found, the graph is disconnected
+                cout << "No spanning tree found!" << endl;
+                return;
+            }
+
+            inTree[u] = true;
+            edgesAdded++;
+
+            for (int v = 0; v < n; v++) {
+                if (!inTree[v] && cost[u][v] < minCost[v]) {
+                    minCost[v] = cost[u][v];
+                }
+            }
+        }
+
+        // Display the edges and the total cost of the MST
+        for (int v = 1; v < n; v++) {
+            cout << "Edge 0 - " << v << " with cost " << minCost[v] << endl;
+            sum += minCost[v];
+        }
+        cout << "\nTOTAL COST OF MST: " << sum << endl;
+    }
+};
+
+int main() {
+    int n;
+    int cost[MAX][MAX];
+    Prims p;
+    p.createGraph(cost, n);
+    p.findMinimumSpanningTree(n, cost);
+    return 0;
+}

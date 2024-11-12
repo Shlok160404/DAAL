@@ -1,0 +1,61 @@
+#include <iostream>
+using namespace std;
+
+int optimalMerge(int files[], int n) {
+    // Sort the files array in ascending order (bubble sort)
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - 1 - i; j++) {
+            if (files[j] > files[j + 1]) {
+                int temp = files[j];
+                files[j] = files[j + 1];
+                files[j + 1] = temp;
+            }
+        }
+    }
+
+    int cost = 0;
+    cout << "Merge Order:\n";
+
+    // Continue merging until we have only one file
+    while (n > 1) {
+        cout << "The elements in the array are: ";
+        for (int i = 0; i < n; i++) {
+            cout << files[i] << (i < n - 1 ? ", " : "\n");
+        }
+
+        int first = files[0];
+        int second = files[1];
+        int mergedFileSize = first + second;
+        cost += mergedFileSize;
+
+        cout << "Merging " << first << " and " << second << " to form " << mergedFileSize << "\n";
+
+        // Shift the remaining elements and insert the merged file size in sorted order
+        for (int i = 2; i < n; i++) {
+            files[i - 2] = files[i];
+        }
+        n -= 2; // Two elements are removed (merged) and one new element is added
+        files[n] = mergedFileSize; // Add merged file size at the end
+        n++;
+
+        // Sort the array again to maintain ascending order
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - 1 - i; j++) {
+                if (files[j] > files[j + 1]) {
+                    int temp = files[j];
+                    files[j] = files[j + 1];
+                    files[j + 1] = temp;
+                }
+            }
+        }
+    }
+    return cost;
+}
+
+int main() {
+    int manuscripts[] = {100, 250, 50, 400};
+    int n = sizeof(manuscripts) / sizeof(manuscripts[0]);
+    int minCost = optimalMerge(manuscripts, n); // Call the function with correct parameters
+    cout << "Minimum Merging Cost of Manuscripts is " << minCost << endl;
+    return 0;
+}
